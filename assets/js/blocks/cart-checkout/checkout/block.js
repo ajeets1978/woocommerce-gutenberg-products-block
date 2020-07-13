@@ -11,6 +11,7 @@ import {
 	Policies,
 	ReturnToCartButton,
 	ShippingRatesControl,
+	SignupForm,
 } from '@woocommerce/base-components/cart-checkout';
 import { ValidatedTextInput } from '@woocommerce/base-components/text-input';
 import CheckboxControl from '@woocommerce/base-components/checkbox-control';
@@ -49,7 +50,10 @@ import withScrollToTop from '@woocommerce/base-hocs/with-scroll-to-top';
 import {
 	CHECKOUT_SHOW_LOGIN_REMINDER,
 	CHECKOUT_ALLOWS_GUEST,
+	CHECKOUT_ALLOWS_SIGNUP,
 	DISPLAY_CART_PRICES_INCLUDING_TAX,
+	SIGNUP_GENERATE_USERNAME,
+	SIGNUP_GENERATE_PASSWORD,
 } from '@woocommerce/block-settings';
 
 /**
@@ -239,15 +243,16 @@ const Checkout = ( { attributes, scrollToTop } ) => {
 								onChange={ setEmail }
 								required={ true }
 							/>
-							<CheckboxControl
-								className="wc-block-checkout__create-account"
-								label={ __(
-									'Create an account?',
-									'woo-gutenberg-products-block'
-								) }
-								checked={ false }
-								onChange={ () => {} }
-							/>
+							{ CHECKOUT_ALLOWS_SIGNUP && (
+								<SignupForm
+									showUsernameField={
+										! SIGNUP_GENERATE_USERNAME
+									}
+									showPasswordField={
+										! SIGNUP_GENERATE_PASSWORD
+									}
+								/>
+							) }
 						</FormStep>
 						{ needsShipping && (
 							<FormStep

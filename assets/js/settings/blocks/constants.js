@@ -100,3 +100,11 @@ export const CHECKOUT_ALLOWS_SIGNUP = getSetting(
 	'checkoutAllowsSignup',
 	false
 );
+export const SIGNUP_GENERATE_USERNAME = getSetting(
+	'signupGenerateUsername',
+	false
+);
+export const SIGNUP_GENERATE_PASSWORD = getSetting(
+	'signupGeneratePassword',
+	false
+);
