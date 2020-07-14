@@ -62,6 +62,7 @@ const CheckoutProcessor = () => {
 		isProcessing: checkoutIsProcessing,
 		isBeforeProcessing: checkoutIsBeforeProcessing,
 		isComplete: checkoutIsComplete,
+		createAccount,
 	} = useCheckoutContext();
 	const { hasValidationErrors } = useValidationContext();
 	const { shippingAddress, shippingErrorStatus } = useShippingDataContext();
@@ -187,6 +188,7 @@ const CheckoutProcessor = () => {
 			billing_address: currentBillingData.current,
 			shipping_address: currentShippingAddress.current,
 			customer_note: '',
+			createAccount,
 		};
 		if ( cartNeedsPayment ) {
 			data = {
@@ -256,6 +258,7 @@ const CheckoutProcessor = () => {
 		cartNeedsPayment,
 		receiveCart,
 		dispatchActions,
+		createAccount,
 	] );
 	// redirect when checkout is complete and there is a redirect url.
 	useEffect( () => {

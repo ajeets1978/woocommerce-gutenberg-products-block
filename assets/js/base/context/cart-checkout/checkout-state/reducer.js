@@ -17,6 +17,7 @@ const {
 	INCREMENT_CALCULATING,
 	DECREMENT_CALCULATING,
 	SET_ORDER_ID,
+	SET_CREATE_ACCOUNT,
 } = TYPES;
 
 const {
@@ -66,7 +67,7 @@ export const prepareResponseData = ( data ) => {
  */
 export const reducer = (
 	state = DEFAULT_STATE,
-	{ url, type, orderId, data }
+	{ url, type, orderId, data, createAccount }
 ) => {
 	let newState;
 	switch ( type ) {
@@ -182,6 +183,12 @@ export const reducer = (
 			newState = {
 				...state,
 				orderId,
+			};
+			break;
+		case SET_CREATE_ACCOUNT:
+			newState = {
+				...state,
+				createAccount,
 			};
 			break;
 	}
