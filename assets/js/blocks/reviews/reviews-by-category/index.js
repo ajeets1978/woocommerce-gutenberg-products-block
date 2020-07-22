@@ -12,7 +12,26 @@ import '../editor.scss';
 import Editor from './edit';
 import sharedAttributes from '../attributes';
 import save from '../save.js';
+import getDeprecatedProperty from '../deprecated.js';
 import { example } from '../example';
+
+const attributes = {
+	...sharedAttributes,
+	/**
+	 * The ids of the categories to load reviews for.
+	 */
+	categoryIds: {
+		type: 'array',
+		default: [],
+	},
+	/**
+	 * Show the product name.
+	 */
+	showProductName: {
+		type: 'boolean',
+		default: true,
+	},
+};
 
 /**
  * Register and run the "Reviews by category" block.
@@ -40,23 +59,7 @@ registerBlockType( 'woocommerce/reviews-by-category', {
 			showProductName: true,
 		},
 	},
-	attributes: {
-		...sharedAttributes,
-		/**
-		 * The ids of the categories to load reviews for.
-		 */
-		categoryIds: {
-			type: 'array',
-			default: [],
-		},
-		/**
-		 * Show the product name.
-		 */
-		showProductName: {
-			type: 'boolean',
-			default: true,
-		},
-	},
+	attributes,
 
 	/**
 	 * Renders and manages the block.
@@ -71,4 +74,6 @@ registerBlockType( 'woocommerce/reviews-by-category', {
 	 * Save the props to post content.
 	 */
 	save,
+
+	deprecated: getDeprecatedProperty( attributes ),
 } );
