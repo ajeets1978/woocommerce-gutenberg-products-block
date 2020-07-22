@@ -4,6 +4,12 @@
 import { render } from 'react-dom';
 import BlockErrorBoundary from '@woocommerce/base-components/block-error-boundary';
 
+// Some blocks take care of rendering their inner blocks automatically. For example,
+// the empty cart. In those cases, we don't want to trigger the render functions of
+// inner components on `DOMContentLoaded`. Instead, those wrapper blocks can trigger
+// `wc-blocks_render_blocks_frontend` to render its inner blocks.
+const selectorsToSkipOnDOMLoaded = [ '.wp-block-woocommerce-cart' ];
+
 /**
  * Renders a block component in the place of a specified set of selectors.
  *
@@ -12,18 +18,32 @@ import BlockErrorBoundary from '@woocommerce/base-components/block-error-boundar
  * @param {string}   props.selector                CSS selector to match the elements to replace.
  * @param {Function} [props.getProps ]             Function to generate the props object for the block.
  * @param {Function} [props.getErrorBoundaryProps] Function to generate the props object for the error boundary.
+ * @param {boolean}  [props.renderOnDOMLoaded]     Whether this function was triggered by a `DOMContentLoaded` event.
  */
-export const renderFrontend = ( {
+const renderBlockFrontend = ( {
 	Block,
 	selector,
 	getProps = () => {},
 	getErrorBoundaryProps = () => {},
+	renderOnDOMLoaded = false,
 } ) => {
 	const containers = document.querySelectorAll( selector );
 
 	if ( containers.length ) {
 		// Use Array.forEach for IE11 compatibility.
 		Array.prototype.forEach.call( containers, ( el, i ) => {
+			if ( ! el.classList.contains( 'is-loading' ) ) {
+				return;
+			}
+			if ( renderOnDOMLoaded ) {
+				for ( let j = 0; j < selectorsToSkipOnDOMLoaded.length; j++ ) {
+					if (
+						el.parentNode.closest( selectorsToSkipOnDOMLoaded[ j ] )
+					) {
+						return;
+					}
+				}
+			}
 			const props = getProps( el, i );
 			const errorBoundaryProps = getErrorBoundaryProps( el, i );
 			const attributes = {
@@ -40,6 +60,21 @@ export const renderFrontend = ( {
 			);
 		} );
 	}
+};
+
+/**
+ * Adds the event listeners necessary to render the block frontend.
+ *
+ * @param {Object} props Render props.
+ */
+export const renderFrontend = ( props ) => {
+	document.body.addEventListener( 'wc-blocks_render_blocks_frontend', () => {
+		renderBlockFrontend( props );
+	} );
+
+	document.addEventListener( 'DOMContentLoaded', () => {
+		renderBlockFrontend( { ...props, renderOnDOMLoaded: true } );
+	} );
 };
 
 export default renderFrontend;
